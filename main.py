@@ -213,3 +213,16 @@ print(df_prep.head(1))
 df_sent = df_prep[['id','name','reviews_combined', 'user_sentiment']]
 print(df_sent.shape)
 print(df_sent.head(2))
+
+## Handling punctuations
+
+# Function to clean the text and remove all the unnecessary elements.
+def clean_punctuation(sent):
+    sent = sent.lower() # Text to lowercase
+    pattern = '[^\w\s]' # Removing punctuation
+    sent = re.sub(pattern, '', sent)
+    return sent
+
+df_sent['reviews_cleaned'] = df_sent['reviews_combined'].apply(clean_punctuation)
+
+df_sent.head(2)
