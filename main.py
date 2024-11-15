@@ -130,10 +130,10 @@ df_clean.user_sentiment.fillna('Positive', inplace=True)
 null_count = df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum().sort_values(ascending=False)
 null_perc = (df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum() * 100 / df_clean.shape[0]).sort_values(ascending=False)
 null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
-null_data
+print(null_data)
 
 # Check the data for top 5 rows
-df_clean.head()
+print(df_clean.head())
 
 ### Checking Distribution of `reviews_rating` column
 sns.countplot(x = 'reviews_rating', data = df_clean).set(title="Distribution of reviews rating by count", xlabel="reviews rating", ylabel="reviews count")
@@ -151,4 +151,23 @@ df_clean[ df_clean.user_sentiment == 'Positive' ].brand.value_counts(normalize=T
 plt.title("Top 5 Brands with positive reviews")
 plt.xlabel("Brands")
 plt.ylabel("Percentage of positive reviews")
+plt.show()
+
+print(df_clean.brand.value_counts(normalize=True).head(5))
+
+### Checking review counts based on the review year
+
+# Before type conversion
+print(df_clean.reviews_date.dtype)
+
+df_clean['reviews_date'] = pd.to_datetime(df_clean['reviews_date'], errors='coerce')
+
+# After type conversion
+print(df_clean.reviews_date.dtype)
+
+# Getting year component from date
+print(df_clean.reviews_date.dt.year)
+
+# Creating a distribution plot based on reviews year
+sns.displot(data=df_clean, x=df_clean.reviews_date.dt.year).set(title="Distribution of reviews by year", xlabel="reviews year", ylabel="reviews count")
 plt.show()
