@@ -82,3 +82,13 @@ null_count = df[df.columns[df.isna().any()]].isna().sum().sort_values(ascending=
 null_perc = (df[df.columns[df.isna().any()]].isna().sum() * 100 / df.shape[0]).sort_values(ascending=False)
 null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
 null_data
+
+df_clean = df.copy()
+df_clean.drop(columns=['reviews_userProvince','reviews_userCity','reviews_didPurchase'], inplace=True)
+df_clean.shape
+
+# Checking NULLs again
+null_count = df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum().sort_values(ascending=False)
+null_perc = (df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum() * 100 / df_clean.shape[0]).sort_values(ascending=False)
+null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
+null_data
