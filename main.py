@@ -99,3 +99,38 @@ sns.countplot(x = 'reviews_doRecommend', data = df_clean)
 plt.show()
 
 df_clean.drop(columns=['reviews_doRecommend'], inplace=True)
+
+# Checking rowcount before deletion
+df_clean.shape
+
+df_clean = df_clean[~ df_clean.reviews_title.isna() ]
+
+# Checking rowcount post deletion
+df_clean.shape
+
+df_clean = df_clean[~ df_clean.reviews_title.isna() ]
+
+# Checking rowcount post deletion
+df_clean.shape
+
+df_clean = df_clean[~ df_clean.reviews_username.isna() ]
+
+# Checking rowcount post deletion
+df_clean.shape
+
+df_clean.user_sentiment.value_counts()
+
+df_clean[ df_clean.user_sentiment.isna() ]
+
+df_clean[ df_clean.user_sentiment.isna() ].user_sentiment
+
+df_clean.user_sentiment.fillna('Positive', inplace=True)
+
+# Checking NULLs again
+null_count = df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum().sort_values(ascending=False)
+null_perc = (df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum() * 100 / df_clean.shape[0]).sort_values(ascending=False)
+null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
+null_data
+
+# Check the data for top 5 rows
+df_clean.head()
