@@ -439,4 +439,82 @@ logreg_hpt = GridSearchCV(LogisticRegression(random_state=42),
 logreg_hpt.fit(X_train_sm, y_train_sm);
 
 # Checking the best parameters
-logreg_hpt.best_params_
+print(logreg_hpt.best_params_)
+
+### HyperParameter Tuned Model
+
+# Getting the scores of the tuned model
+lr_tuned_metrics = evaluation_scores(logreg_hpt, X_test, y_test)
+
+# Printing the scores of the base and tuned Logistic Regression model for reference
+dict_lr_bt_metrics = {'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Precision','F1 Score'],
+                               'LR Base Model': lr_metrics,
+                               'LR Tuned Model': lr_tuned_metrics}
+
+df_lr_bt_metrics = pd.DataFrame(dict_lr_bt_metrics, columns = ['Metrics', 'LR Base Model', 'LR Tuned Model'])
+print(df_lr_bt_metrics)
+
+## Random Forest Classifier
+
+rf = RandomForestClassifier(random_state=42).fit(X_train_sm, y_train_sm)
+
+# Getting the score of the base model
+rf_metrics = evaluation_scores(rf, X_test, y_test)
+
+# Printing the scores of the base model as reference
+df_rfb_metrics = pd.DataFrame({'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Precision','F1 Score'], 'RF Base Model': rf_metrics},
+                             columns = ['Metrics', 'RF Base Model']
+                             )
+print(df_rfb_metrics)
+
+### HyperParameter Tuning
+
+rf_grid = {"n_estimators": np.arange(10, 1000, 50),
+           "max_depth": np.arange(10, 50, 5),
+           "min_samples_split": np.arange(15, 500, 15),
+           "min_samples_leaf": np.arange(5, 50, 5)}
+
+# Setup random hyperparameter search for Random Forest Classifier
+rf_hpt = RandomizedSearchCV(RandomForestClassifier(random_state=42),
+                                param_distributions=rf_grid,
+                                cv=5,
+                                verbose=True,
+                                n_jobs=-1,
+                                scoring='f1')
+
+# Fit random hyperparameter search model
+rf_hpt.fit(X_train_sm, y_train_sm);
+
+# Check best parameters
+print(rf_hpt.best_params_)
+
+evaluation_scores(rf_hpt, X_test, y_test)
+
+# Fine tuning using Grid Search CV
+rf_grid = {"n_estimators": [510],
+           "max_depth": [20],
+           "min_samples_split": [350, 400],
+           "min_samples_leaf": [45, 50]}
+
+# Setup random hyperparameter search for Random Forest Classifier
+rf_hpt = GridSearchCV(RandomForestClassifier(random_state=42),
+                                param_grid=rf_grid,
+                                cv=5,
+                                verbose=True,
+                                n_jobs=-1,
+                                scoring='f1')
+
+# Fit random hyperparameter search model
+rf_hpt.fit(X_train_sm, y_train_sm);
+
+# Getting the scores of the tuned model
+rf_tuned_metrics = evaluation_scores(rf_hpt, X_test, y_test)
+
+# Printing the scores of the base and tuned Random Forest model as reference
+dict_rf_bt_metrics = {'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Precision','F1 Score'],
+                               'RF Base Model': rf_metrics,
+                               'RF Tuned Model': rf_tuned_metrics}
+
+df_rf_bt_metrics = pd.DataFrame(dict_rf_bt_metrics, columns = ['Metrics', 'RF Base Model', 'RF Tuned Model'])
+print(df_rf_bt_metrics)
+
