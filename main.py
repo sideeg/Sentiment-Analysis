@@ -67,3 +67,6 @@ warnings.filterwarnings("ignore")
 
 # Loading the data
 df = pd.read_csv("../input/sentiment-based-product-recommendation-system/sample30.csv")
+
+# Exploratory Data Analysis
+df.shape
