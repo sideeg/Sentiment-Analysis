@@ -226,3 +226,35 @@ def clean_punctuation(sent):
 df_sent['reviews_cleaned'] = df_sent['reviews_combined'].apply(clean_punctuation)
 
 df_sent.head(2)
+
+
+nltk.download('stopwords')
+
+from nltk.corpus import stopwords
+stopwords_set = set(stopwords.words("english"))
+print(stopwords_set)
+
+# Function to remove the stopwords
+def clean_stopwords(sent):
+    sent = sent.lower() # Text to lowercase
+    words = word_tokenize(sent) # Split sentences into words
+    text_nostopwords = " ".join( [each_word for each_word in words if each_word not in stopwords_set] )
+    return sent
+
+df_sent['reviews_cleaned'] = df_sent['reviews_cleaned'].apply(clean_stopwords)
+
+print(df_sent.head(2))
+
+## Handling lemmatization
+
+#Function to lemmatize the text
+def clean_lemma(text):
+    sent = []
+    doc = nlp(text)
+    for token in doc:
+        sent.append(token.lemma_)
+    return " ".join(sent)
+
+df_sent['reviews_lemmatized'] = df_sent['reviews_cleaned'].apply(clean_lemma)
+
+print(df_sent.head(2))
