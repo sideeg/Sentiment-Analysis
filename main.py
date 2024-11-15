@@ -408,3 +408,10 @@ def evaluation_scores(classifier, X_test, y_test):
     evaluation_metrics.append(F1_score)
 
     return evaluation_metrics
+
+## Logistic Regression
+
+### Base Model
+logreg = LogisticRegression(random_state=42, solver='liblinear').fit(X_train_sm, y_train_sm)
+# Getting the score of the base model
+lr_metrics = evaluation_scores(logreg, X_test, y_test)
