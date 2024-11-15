@@ -329,3 +329,82 @@ X_train_sm, y_train_sm = smote.fit_resample(X_train,y_train)
 
 counter = Counter(y_train_sm)
 print("After handling imbalance", counter)
+
+# Model Building
+
+# Function to display scores
+def evaluation_scores(classifier, X_test, y_test):
+    # Calculating Predicted value
+    y_pred = classifier.predict(X_test)
+
+    # Create confusion matrix
+    conf_m = confusion_matrix(y_test, y_pred)
+
+    print("Visualizing the Confusion Matrix with a Heatmap")
+    print("\n")
+    print("*" * 50)
+    # Visualize Confusion Matrix with heatmap
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax = sns.heatmap(confusion_matrix(y_test, y_pred),
+                     annot=True,
+                     cbar=False,
+                     cmap="RdYlGn", fmt='0.1f')
+    plt.xlabel("Actual label")
+    plt.ylabel("Predicted label")
+    plt.show()
+    print("*" * 50)
+    print("\n")
+
+    # Calculating the values of True Positives, True Negatives, False Positivies and False Negatives
+    TP = conf_m[1][1]
+    TN = conf_m[0][0]
+    FP = conf_m[0][1]
+    FN = conf_m[1][0]
+
+    print("Values of True Positives, True Negatives, False Positivies and False Negatives")
+    print("~" * 50)
+    print('True Positives:', TP)
+    print('True Negatives:', TN)
+    print('False Positives:', FP)
+    print('False Negatives:', FN)
+    print("~" * 50)
+    print("\n")
+
+    # Calculating Accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    accuracy = round(accuracy, 2)
+
+    # Calculating Sensitivity/Recall
+    sensitivity_recall = (TP / float(TP + FN))
+    sensitivity_recall = round(sensitivity_recall, 2)
+
+    # Calculating Specificity
+    specificity = (TN / float(TN + FP))
+    specificity = round(specificity, 2)
+
+    # Calculating Precision
+    precision = (TP / float(TP + FP))
+    precision = round(precision, 2)
+
+    # Calculating F_1 score
+    F1_score = 2 * ((precision * sensitivity_recall) / (precision + sensitivity_recall))
+    F1_score = round(F1_score, 2)
+
+    print("Evaluation Score Summary")
+    print('-' * 50)
+    print(f'Accuracy Score: {round(accuracy, 2)}')
+    print(f'Sensitivity/Recall Score: {round(sensitivity_recall, 2)}')
+    print(f'Specificity Score: {round(specificity, 2)}')
+    print(f'Precision: {round(precision, 2)}')
+    print(f'F1 Score: {round(F1_score, 2)}')
+    print('-' * 50)
+
+    # Returning evaluation results for comparison later
+    evaluation_metrics = []
+    evaluation_metrics.append(accuracy)
+    evaluation_metrics.append(sensitivity_recall)
+    evaluation_metrics.append(specificity)
+    evaluation_metrics.append(precision)
+    evaluation_metrics.append(F1_score)
+
+    return evaluation_metrics
