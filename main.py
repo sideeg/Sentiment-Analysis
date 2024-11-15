@@ -56,9 +56,9 @@ from pprint import pprint
 
 
 # Setting max rows and columns
-pd.set_option('max_columns', 50)
-pd.set_option('max_rows', 50)
-pd.set_option('display.max_colwidth', 300)
+pd.options.display.max_columns = 50
+pd.options.display.max_rows =  50
+pd.options.display.max_colwidth= 300
 pd.set_option("display.precision", 2)
 
 # Ignore warnings
@@ -66,7 +66,10 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Loading the data
-df = pd.read_csv("../input/sentiment-based-product-recommendation-system/sample30.csv")
+df = pd.read_csv("sample30.csv")
 
 # Exploratory Data Analysis
 df.shape
+
+# Inspect the dataframe to understand the given data.
+df.info()
