@@ -415,3 +415,28 @@ def evaluation_scores(classifier, X_test, y_test):
 logreg = LogisticRegression(random_state=42, solver='liblinear').fit(X_train_sm, y_train_sm)
 # Getting the score of the base model
 lr_metrics = evaluation_scores(logreg, X_test, y_test)
+
+# Printing the scores of the base model as reference
+df_lrb_metrics = pd.DataFrame({'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Precision','F1 Score'], 'Logistic Regression Base Model': lr_metrics},
+                             columns = ['Metrics', 'Logistic Regression Base Model']
+                             )
+print(df_lrb_metrics)
+
+### HyperParameter Tuning
+
+logreg_grid = {"C": [100, 10, 5, 4, 3, 2, 1, 1.0, 0.1, 0.01],
+                "solver": ["liblinear"]}
+
+# Setup grid hyperparameter search for LogisticRegression
+logreg_hpt = GridSearchCV(LogisticRegression(random_state=42),
+                                param_grid=logreg_grid,
+                                cv=5,
+                                verbose=True,
+                                n_jobs=-1,
+                                scoring='f1')
+
+# Fit random hyperparameter search model
+logreg_hpt.fit(X_train_sm, y_train_sm);
+
+# Checking the best parameters
+logreg_hpt.best_params_
