@@ -589,4 +589,17 @@ dict_bt_metrics = {'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Pr
                               'XG Base Model': xg_metrics, 'XG Tuned Model': xg_tuned_metrics}
 
 df_bt_metrics = pd.DataFrame(dict_bt_metrics, columns = ['Metrics', 'LR Base Model', 'LR Tuned Model', 'RF Base Model', 'RF Tuned Model', 'XG Base Model', 'XG Tuned Model'])
-df_bt_metrics
+print(df_bt_metrics)
+
+# Building a Recommendation System
+
+df_reco = pd.read_csv("sample30.csv")
+
+df_reco.shape
+
+# We need only the below columns for building a recommendation system
+df_reco = df_reco[["id", "name", "reviews_rating", "reviews_username"]]
+
+df_reco.shape
+
+print(df_reco.head(2))
