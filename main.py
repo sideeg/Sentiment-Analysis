@@ -579,3 +579,14 @@ dict_xg_bt_metrics = {'Metrics': ['Accuracy','Sensitivity/Recall','Specificity',
 
 df_xg_bt_metrics = pd.DataFrame(dict_xg_bt_metrics, columns = ['Metrics', 'XG Base Model', 'XG Tuned Model'])
 print(df_xg_bt_metrics)
+
+# Model Evaluation
+
+# Printing the scores of all the 3 Models (Base and Tuned)
+dict_bt_metrics = {'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Precision','F1 Score'],
+                              'LR Base Model': lr_metrics, 'LR Tuned Model': lr_tuned_metrics,
+                              'RF Base Model': rf_metrics, 'RF Tuned Model': rf_tuned_metrics,
+                              'XG Base Model': xg_metrics, 'XG Tuned Model': xg_tuned_metrics}
+
+df_bt_metrics = pd.DataFrame(dict_bt_metrics, columns = ['Metrics', 'LR Base Model', 'LR Tuned Model', 'RF Base Model', 'RF Tuned Model', 'XG Base Model', 'XG Tuned Model'])
+df_bt_metrics
