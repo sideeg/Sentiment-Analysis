@@ -92,3 +92,10 @@ null_count = df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum().sort
 null_perc = (df_clean[df_clean.columns[df_clean.isna().any()]].isna().sum() * 100 / df_clean.shape[0]).sort_values(ascending=False)
 null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
 null_data
+
+
+df_clean.reviews_doRecommend.value_counts(normalize=True)
+sns.countplot(x = 'reviews_doRecommend', data = df_clean)
+plt.show()
+
+df_clean.drop(columns=['reviews_doRecommend'], inplace=True)
