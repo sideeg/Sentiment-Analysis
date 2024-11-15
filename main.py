@@ -518,3 +518,64 @@ dict_rf_bt_metrics = {'Metrics': ['Accuracy','Sensitivity/Recall','Specificity',
 df_rf_bt_metrics = pd.DataFrame(dict_rf_bt_metrics, columns = ['Metrics', 'RF Base Model', 'RF Tuned Model'])
 print(df_rf_bt_metrics)
 
+## XGBoost Classifier
+
+xg = xgb.XGBClassifier(random_state=42).fit(X_train_sm, y_train_sm)
+# Getting the score of the base model
+xg_metrics = evaluation_scores(xg, X_test, y_test)
+
+# Printing the scores of the base model as reference
+df_xgb_metrics = pd.DataFrame({'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Precision','F1 Score'], 'XG Base Model': xg_metrics},
+                             columns = ['Metrics', 'XG Base Model']
+                             )
+print(df_xgb_metrics)
+
+xg_grid = {"learning_rate": np.arange(0.05, 1, 0.1),
+           "max_depth": np.arange(5, 20, 5)
+           }
+
+# Setup random hyperparameter search for Random Forest Classifier
+xg_hpt = RandomizedSearchCV(XGBClassifier(random_state=42),
+                                param_distributions=xg_grid,
+                                cv=4,
+                                verbose=True,
+                                n_jobs=-1,
+                                scoring='f1')
+
+# Fit random hyperparameter search model
+xg_hpt.fit(X_train_sm, y_train_sm);
+
+# Check best parameters
+print(xg_hpt.best_params_)
+
+evaluation_scores(xg_hpt, X_test, y_test)
+
+# Fine tuning with Grid Search CV
+xg_grid = {"learning_rate": [0.45, 0.15],
+           "max_depth": [5, 10]
+           }
+
+# Setup random hyperparameter search for Random Forest Classifier
+xg_hpt = GridSearchCV(XGBClassifier(random_state=42),
+                                param_grid=xg_grid,
+                                cv=5,
+                                verbose=True,
+                                n_jobs=-1,
+                                scoring='f1')
+
+# Fit random hyperparameter search model
+xg_hpt.fit(X_train_sm, y_train_sm);
+
+# Check best parameters
+print(xg_hpt.best_params_)
+
+# Getting the scores of the tuned model
+xg_tuned_metrics = evaluation_scores(xg_hpt, X_test, y_test)
+
+# Printing the scores of the base and tuned XGBoost model as reference
+dict_xg_bt_metrics = {'Metrics': ['Accuracy','Sensitivity/Recall','Specificity','Precision','F1 Score'],
+                               'XG Base Model': xg_metrics,
+                               'XG Tuned Model': xg_tuned_metrics}
+
+df_xg_bt_metrics = pd.DataFrame(dict_xg_bt_metrics, columns = ['Metrics', 'XG Base Model', 'XG Tuned Model'])
+print(df_xg_bt_metrics)
