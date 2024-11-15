@@ -196,3 +196,10 @@ df_clean['reviews_username'] = df_clean['reviews_username'].astype(str)
 
 # Getting a copy of dataframe for pre-processing
 df_prep = df_clean.copy()
+
+df_prep['reviews_combined'] = df_prep['reviews_text'] + " " + df_prep['reviews_title']
+df_prep.drop(columns=['reviews_text', 'reviews_title'], inplace=True)
+
+print(df_prep.shape)
+
+print(df_prep.head(1))
