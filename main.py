@@ -73,3 +73,12 @@ df.shape
 
 # Inspect the dataframe to understand the given data.
 df.info()
+
+# Print top 5 rows of the data
+df.head()
+
+# Getting total number of NULL values and percentage of the columns
+null_count = df[df.columns[df.isna().any()]].isna().sum().sort_values(ascending=False)
+null_perc = (df[df.columns[df.isna().any()]].isna().sum() * 100 / df.shape[0]).sort_values(ascending=False)
+null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
+null_data
