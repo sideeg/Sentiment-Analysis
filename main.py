@@ -134,3 +134,7 @@ null_data
 
 # Check the data for top 5 rows
 df_clean.head()
+
+### Checking Distribution of `reviews_rating` column
+sns.countplot(x = 'reviews_rating', data = df_clean).set(title="Distribution of reviews rating by count", xlabel="reviews rating", ylabel="reviews count")
+plt.show()
