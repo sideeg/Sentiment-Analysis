@@ -193,3 +193,6 @@ df_clean['name'] = df_clean['name'].astype(str)
 df_clean['reviews_text'] = df_clean['reviews_text'].astype(str)
 df_clean['reviews_title'] = df_clean['reviews_title'].astype(str)
 df_clean['reviews_username'] = df_clean['reviews_username'].astype(str)
+
+# Getting a copy of dataframe for pre-processing
+df_prep = df_clean.copy()
