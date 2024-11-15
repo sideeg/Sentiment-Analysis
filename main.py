@@ -171,3 +171,15 @@ print(df_clean.reviews_date.dt.year)
 # Creating a distribution plot based on reviews year
 sns.displot(data=df_clean, x=df_clean.reviews_date.dt.year).set(title="Distribution of reviews by year", xlabel="reviews year", ylabel="reviews count")
 plt.show()
+
+### Checking Movie categories by Rating
+
+plt.figure(figsize = [10,6])
+
+sns.boxplot(data=df_clean, x='user_sentiment', y='reviews_rating', color='green')
+plt.xticks(rotation = 45)
+
+plt.tight_layout(pad = 4)
+plt.show()
+
+df_clean[ (df_clean.user_sentiment == 'Negative') & (df_clean.reviews_rating >= 4) ].groupby(['reviews_rating']).count().user_sentiment
