@@ -60,3 +60,7 @@ pd.set_option('max_columns', 50)
 pd.set_option('max_rows', 50)
 pd.set_option('display.max_colwidth', 300)
 pd.set_option("display.precision", 2)
+
+# Ignore warnings
+import warnings
+warnings.filterwarnings("ignore")
