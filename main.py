@@ -312,3 +312,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_
 
 print("Train shapes:", X_train.shape, y_train.shape)
 print("Test shapes:", X_test.shape, y_test.shape)
+
+## Class Imbalance
+
+# Check the data to see if there is a class imbalance in the data
+df_sent['user_sentiment'].value_counts(normalize=True)
+
+print(df_sent.head(2))
+
+counter = Counter(y_train)
+print("Before handling imbalance", counter)
+
+#oversampling using SMOTE
+smote = SMOTE(random_state=42)
+X_train_sm, y_train_sm = smote.fit_resample(X_train,y_train)
+
+counter = Counter(y_train_sm)
+print("After handling imbalance", counter)
