@@ -183,3 +183,13 @@ plt.tight_layout(pad = 4)
 plt.show()
 
 df_clean[ (df_clean.user_sentiment == 'Negative') & (df_clean.reviews_rating >= 4) ].groupby(['reviews_rating']).count().user_sentiment
+
+## Type Conversion
+# Convert all the text columns to string for performing text operations
+df_clean['brand'] = df_clean['brand'].astype(str)
+df_clean['categories'] = df_clean['categories'].astype(str)
+df_clean['manufacturer'] = df_clean['manufacturer'].astype(str)
+df_clean['name'] = df_clean['name'].astype(str)
+df_clean['reviews_text'] = df_clean['reviews_text'].astype(str)
+df_clean['reviews_title'] = df_clean['reviews_title'].astype(str)
+df_clean['reviews_username'] = df_clean['reviews_username'].astype(str)
