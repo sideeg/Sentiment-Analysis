@@ -207,4 +207,9 @@ print(df_prep.head(1))
 ## Removing columns unneeded for analysis
 df_prep.drop(columns=['categories', 'manufacturer', 'reviews_date'], inplace=True)
 
-df_prep.head(1)
+print(df_prep.head(1))
+
+## Creating dataframe for Sentiment analysis with only the required columns
+df_sent = df_prep[['id','name','reviews_combined', 'user_sentiment']]
+print(df_sent.shape)
+print(df_sent.head(2))
