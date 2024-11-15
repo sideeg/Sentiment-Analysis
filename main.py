@@ -236,6 +236,9 @@ print(stopwords_set)
 
 # Function to remove the stopwords
 def clean_stopwords(sent):
+    # import nltk
+    # nltk.download('punkt_tab')
+
     sent = sent.lower() # Text to lowercase
     words = word_tokenize(sent) # Split sentences into words
     text_nostopwords = " ".join( [each_word for each_word in words if each_word not in stopwords_set] )
@@ -258,3 +261,54 @@ def clean_lemma(text):
 df_sent['reviews_lemmatized'] = df_sent['reviews_cleaned'].apply(clean_lemma)
 
 print(df_sent.head(2))
+
+df_sent = df_sent[['id','name','reviews_lemmatized', 'user_sentiment']]
+
+print(df_sent.head(2))
+print(df_sent.shape)
+
+# Visualizing 'reviews_lemmatized' character length
+character_length = [len(each_sent) for each_sent in df_sent['reviews_lemmatized']]
+
+sns.displot(character_length, kind='hist', bins=60)
+plt.xlabel("Reviews character length")
+plt.ylabel("Total number of Reviews")
+plt.title("Distribution of Reviews character length")
+plt.show()
+
+#Using a word cloud visualize the top 30 words in review by frequency
+stopwords_wordcloud = set(STOPWORDS)
+wordcloud = WordCloud(max_font_size=60, max_words=30,
+                      background_color="white", random_state=42,
+                      stopwords=stopwords_wordcloud).generate(str(df_sent['reviews_lemmatized']))
+plt.figure(figsize=[10,10])
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+
+#Using a word cloud visualize the top 30 words in review by frequency
+stopwords_wordcloud = set(STOPWORDS)
+wordcloud = WordCloud(max_font_size=60, max_words=30,
+                      background_color="white", random_state=42,
+                      stopwords=stopwords_wordcloud).generate(str(df_sent['reviews_lemmatized']))
+plt.figure(figsize=[10,10])
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+
+
+# Feature Extraction
+
+# Initialize the TfidfVectorizer
+tfidf = TfidfVectorizer(min_df=5, max_df=0.95, stop_words='english', ngram_range=(1,2))
+
+X = tfidf.fit_transform(df_sent['reviews_lemmatized'])
+
+y= df_sent['user_sentiment']
+
+## Train, test split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.25)
+
+print("Train shapes:", X_train.shape, y_train.shape)
+print("Test shapes:", X_test.shape, y_test.shape)
