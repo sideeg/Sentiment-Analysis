@@ -145,3 +145,10 @@ plt.title("Top 5 Brands with negative reviews")
 plt.xlabel("Brands")
 plt.ylabel("Percentage of negative reviews")
 plt.show()
+
+### Checking Top 5 Brands with positive reviews
+df_clean[ df_clean.user_sentiment == 'Positive' ].brand.value_counts(normalize=True, ascending=False).head(5).plot(kind='bar')
+plt.title("Top 5 Brands with positive reviews")
+plt.xlabel("Brands")
+plt.ylabel("Percentage of positive reviews")
+plt.show()
