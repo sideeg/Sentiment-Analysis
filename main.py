@@ -203,3 +203,8 @@ df_prep.drop(columns=['reviews_text', 'reviews_title'], inplace=True)
 print(df_prep.shape)
 
 print(df_prep.head(1))
+
+## Removing columns unneeded for analysis
+df_prep.drop(columns=['categories', 'manufacturer', 'reviews_date'], inplace=True)
+
+df_prep.head(1)
