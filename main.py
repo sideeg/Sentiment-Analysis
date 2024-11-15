@@ -603,3 +603,23 @@ df_reco = df_reco[["id", "name", "reviews_rating", "reviews_username"]]
 df_reco.shape
 
 print(df_reco.head(2))
+
+
+## Handling NULL values
+# Getting total number of NULL values and percentage of the columns
+null_count = df_reco[df_reco.columns[df_reco.isna().any()]].isna().sum().sort_values(ascending=False)
+null_perc = (df_reco[df_reco.columns[df_reco.isna().any()]].isna().sum() * 100 / df_reco.shape[0]).sort_values(ascending=False)
+null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
+print(null_data)
+
+# Removing the rows where reviews_username is NULL
+df_reco = df_reco[~ df_reco.reviews_username.isna() ]
+
+print(df_reco.shape)
+
+# Check if any NULL values still exist in the dataset
+null_count = df_reco[df_reco.columns[df_reco.isna().any()]].isna().sum().sort_values(ascending=False)
+null_perc = (df_reco[df_reco.columns[df_reco.isna().any()]].isna().sum() * 100 / df_reco.shape[0]).sort_values(ascending=False)
+null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
+print(null_data)
+
