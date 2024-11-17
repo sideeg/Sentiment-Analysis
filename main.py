@@ -346,12 +346,15 @@ def evaluation_scores(classifier, X_test, y_test):
     # Visualize Confusion Matrix with heatmap
     fig, ax = plt.subplots(figsize=(6, 6))
     ax = sns.heatmap(confusion_matrix(y_test, y_pred),
-                     annot=True,
-                     cbar=False,
-                     cmap="RdYlGn", fmt='0.1f')
+                    annot=True,
+                    cbar=False,
+                    cmap="RdYlGn", fmt='0.1f')
     plt.xlabel("Actual label")
     plt.ylabel("Predicted label")
     plt.show()
+
+    # أغلق الشكل البياني بعد رسمه
+    plt.close(fig)
     print("*" * 50)
     print("\n")
 
@@ -409,6 +412,13 @@ def evaluation_scores(classifier, X_test, y_test):
 
     return evaluation_metrics
 
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+# تحويل القيم النصية إلى قيم رقمية
+le = LabelEncoder()
+y_train_sm = le.fit_transform(y_train_sm)
+y_test = le.fit_transform(y_test)
+
 ## Logistic Regression
 
 ### Base Model
@@ -439,7 +449,7 @@ logreg_hpt = GridSearchCV(LogisticRegression(random_state=42),
 logreg_hpt.fit(X_train_sm, y_train_sm);
 
 # Checking the best parameters
-print(logreg_hpt.best_params_)
+#print(logreg_hpt.best_params_)
 
 ### HyperParameter Tuned Model
 
@@ -520,7 +530,11 @@ print(df_rf_bt_metrics)
 
 ## XGBoost Classifier
 
+
+
 xg = xgb.XGBClassifier(random_state=42).fit(X_train_sm, y_train_sm)
+
+
 # Getting the score of the base model
 xg_metrics = evaluation_scores(xg, X_test, y_test)
 
@@ -569,7 +583,9 @@ xg_hpt.fit(X_train_sm, y_train_sm);
 # Check best parameters
 print(xg_hpt.best_params_)
 
+
 # Getting the scores of the tuned model
+
 xg_tuned_metrics = evaluation_scores(xg_hpt, X_test, y_test)
 
 # Printing the scores of the base and tuned XGBoost model as reference
@@ -633,3 +649,6 @@ null_count = df_reco[df_reco.columns[df_reco.isna().any()]].isna().sum().sort_va
 null_perc = (df_reco[df_reco.columns[df_reco.isna().any()]].isna().sum() * 100 / df_reco.shape[0]).sort_values(ascending=False)
 null_data = pd.concat([null_count, null_perc], axis=1, keys=['Count', 'Percentage'])
 print(null_data)
+
+## Train, Test Split
+
