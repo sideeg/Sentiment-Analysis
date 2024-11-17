@@ -652,3 +652,18 @@ print(null_data)
 
 ## Train, Test Split
 
+train, test = train_test_split(df_reco, test_size=0.30, random_state=42)
+
+print(train.shape)
+print(test.shape)
+
+train.head(2)
+
+# Pivot the train ratings' dataset into matrix format in which columns are Products and the rows are usernames.
+df_pivot = train.pivot_table(
+    index='reviews_username',
+    columns='id',
+    values='reviews_rating'
+).fillna(0)
+
+df_pivot.head(3)
