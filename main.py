@@ -711,3 +711,30 @@ user_correlation[np.isnan(user_correlation)] = 0
 print(user_correlation)
 
 user_correlation.shape
+
+## Prediction - User User
+
+user_correlation[user_correlation<0]=0
+print(user_correlation)
+
+user_predicted_ratings = np.dot(user_correlation, df_pivot.fillna(0))
+print(user_predicted_ratings)
+
+user_predicted_ratings.shape
+
+user_final_rating = np.multiply(user_predicted_ratings,dummy_train)
+user_final_rating.head()
+
+## Finding the Top 20 products that a user is most likely to purchase based on the ratings (user-user based recommendation)
+
+# Take a sample username as input.
+user_input = '00sab00'
+
+top20_recommendations = user_final_rating.loc[user_input].sort_values(ascending=False)[0:20]
+df_top20_recommendations = pd.DataFrame({'Product Id': top20_recommendations.index, 'cosine_similarity_score' : top20_recommendations})
+df_top20_recommendations.reset_index(drop=True, inplace=True)
+df_top20_recommendations
+
+top20_rec = pd.merge(df_reco, df_top20_recommendations,left_on='id',right_on='Product Id', how = 'inner')[['Product Id', 'name', 'cosine_similarity_score']].drop_duplicates()
+top20_rec.reset_index(drop=True, inplace=True)
+top20_rec.sort_values(by='cosine_similarity_score', ascending=False)
