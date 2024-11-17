@@ -956,3 +956,25 @@ rmse_item_item = (sum(sum((common_ - y )**2))/total_non_nan)**0.5
 print(rmse_item_item)
 
 # Best-suited Recommendation model
+# Recommended model evaluation
+if rmse_user_user < rmse_item_item:
+  print("Best-fit model is user-user recommendation system")
+else:
+  print("Best-fit model is item-item recommendation system")
+
+# Take a sample username as input
+user_input = 'evrydayhustla420'
+
+top20_recommendations = user_final_rating.loc[user_input].sort_values(ascending=False)[0:20]
+df_top20_recommendations = pd.DataFrame({'Product Id': top20_recommendations.index, 'cosine_similarity_score' : top20_recommendations})
+df_top20_recommendations.reset_index(drop=True, inplace=True)
+df_top20_recommendations
+
+top20_rec = pd.merge(df_reco, df_top20_recommendations,left_on='id',right_on='Product Id', how = 'inner')[['Product Id', 'name', 'cosine_similarity_score']].drop_duplicates()
+top20_rec.reset_index(drop=True, inplace=True)
+top20_rec.sort_values(by='cosine_similarity_score', ascending=False)
+
+user_final_rating.shape
+
+print(user_final_rating.head(2))
+
