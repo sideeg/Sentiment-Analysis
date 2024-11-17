@@ -667,3 +667,20 @@ df_pivot = train.pivot_table(
 ).fillna(0)
 
 df_pivot.head(3)
+
+## Creating dummy train & dummy test dataset
+
+# Copy the train dataset into dummy_train
+dummy_train = train.copy()
+
+# The products not rated by user is marked as 1 for prediction.
+dummy_train['reviews_rating'] = dummy_train['reviews_rating'].apply(lambda x: 0 if x>=1 else 1)
+
+# Convert the dummy train dataset into matrix format
+dummy_train = dummy_train.pivot_table(
+    index='reviews_username',
+    columns='id',
+    values='reviews_rating'
+).fillna(1)
+
+dummy_train.head(3)
