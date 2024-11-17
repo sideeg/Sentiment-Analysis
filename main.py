@@ -684,3 +684,30 @@ dummy_train = dummy_train.pivot_table(
 ).fillna(1)
 
 dummy_train.head(3)
+
+## User Similarity Matrix (Using Adjusted Cosine)
+
+# Pivot the train ratings' dataset into matrix format in which columns are Products and the rows are usernames.
+df_pivot = train.pivot_table(
+    index='reviews_username',
+    columns='id',
+    values='reviews_rating'
+)
+
+# For verification purpose, we do have cases where the rating is not NaN
+df_pivot[~df_pivot['AV13O1A8GV-KLJ3akUyj'].isna()]
+
+### Normalising the rating of the product for each user around 0 mean
+mean = np.nanmean(df_pivot, axis=1)
+df_subtracted = (df_pivot.T-mean).T
+
+df_subtracted.head()
+
+### Finding cosine similarity
+
+# Creating the User Similarity Matrix using pairwise_distance function.
+user_correlation = 1 - pairwise_distances(df_subtracted.fillna(0), metric='cosine')
+user_correlation[np.isnan(user_correlation)] = 0
+print(user_correlation)
+
+user_correlation.shape
