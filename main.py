@@ -851,3 +851,32 @@ print(item_correlation)
 # Filtering the correlation only for which the value is greater than 0. (Positively correlated)
 item_correlation[item_correlation<0]=0
 item_correlation
+
+## Prediction - Item Item
+
+item_predicted_ratings = np.dot((df_pivot.fillna(0).T),item_correlation)
+item_predicted_ratings
+
+item_predicted_ratings.shape
+
+dummy_train.shape
+
+### Filtering the rating only for the products not rated by the user for recommendation
+item_final_rating = np.multiply(item_predicted_ratings,dummy_train)
+item_final_rating.head()
+
+# Take a sample username as input.
+user_input = '00sab00'
+
+item_final_rating.head(2)
+
+top20_item_recommendations = item_final_rating.loc[user_input].sort_values(ascending=False)[0:20]
+df_top20_item_recommendations = pd.DataFrame({'Product Id': top20_item_recommendations.index, 'cosine_similarity_score' : top20_item_recommendations})
+df_top20_item_recommendations.reset_index(drop=True, inplace=True)
+df_top20_item_recommendations
+
+## Finding the Top 20 products that a user is most likely to purchase based on the ratings (item-item based recommendation)
+top20_item_rec = pd.merge(df_reco, df_top20_item_recommendations,left_on='id',right_on='Product Id', how = 'inner')[['Product Id', 'name', 'cosine_similarity_score']].drop_duplicates()
+top20_item_rec.reset_index(drop=True, inplace=True)
+top20_item_rec.sort_values(by='cosine_similarity_score', ascending=False)
+
