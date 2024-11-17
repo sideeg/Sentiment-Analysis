@@ -738,3 +738,66 @@ df_top20_recommendations
 top20_rec = pd.merge(df_reco, df_top20_recommendations,left_on='id',right_on='Product Id', how = 'inner')[['Product Id', 'name', 'cosine_similarity_score']].drop_duplicates()
 top20_rec.reset_index(drop=True, inplace=True)
 top20_rec.sort_values(by='cosine_similarity_score', ascending=False)
+
+## Evaluation - User User
+
+train.head(2)
+
+# Find out the common users of test and train dataset.
+common = test[test.reviews_username.isin(train.reviews_username)]
+common.shape
+
+common.head(2)
+
+# convert into the user-product matrix.
+common_user_based_matrix = common.pivot_table(index='reviews_username', columns='id', values='reviews_rating')
+
+common_user_based_matrix.head(2)
+
+# Convert the user_correlation matrix into dataframe.
+user_correlation_df = pd.DataFrame(user_correlation)
+
+user_correlation_df.head(2)
+
+df_subtracted.head(1)
+
+user_correlation_df['userId'] = df_subtracted.index
+user_correlation_df.set_index('userId',inplace=True)
+user_correlation_df.head(2)
+
+common.head(1)
+
+list_name = common.reviews_username.tolist()
+
+user_correlation_df.columns = df_pivot.index.tolist()
+user_correlation_df_1 =  user_correlation_df[user_correlation_df.index.isin(list_name)]
+
+user_correlation_df_1.shape
+
+user_correlation_df_2 = user_correlation_df_1.T[user_correlation_df_1.T.index.isin(list_name)]
+
+user_correlation_df_3 = user_correlation_df_2.T
+
+user_correlation_df_3.head()
+
+user_correlation_df_3.shape
+
+user_correlation_df_3[user_correlation_df_3<0]=0
+
+common_user_predicted_ratings = np.dot(user_correlation_df_3, common_user_based_matrix.fillna(0))
+common_user_predicted_ratings
+
+common.head(2)
+
+# Creating dummy test dataframe
+dummy_test = common.copy()
+
+dummy_test['reviews_rating'] = dummy_test['reviews_rating'].apply(lambda x: 1 if x>=1 else 0)
+
+dummy_test = dummy_test.pivot_table(index='reviews_username', columns='id', values='reviews_rating').fillna(0)
+
+dummy_test.shape
+
+common_user_predicted_ratings = np.multiply(common_user_predicted_ratings,dummy_test)
+
+common_user_predicted_ratings.head(2)
