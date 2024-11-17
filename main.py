@@ -801,3 +801,53 @@ dummy_test.shape
 common_user_predicted_ratings = np.multiply(common_user_predicted_ratings,dummy_test)
 
 common_user_predicted_ratings.head(2)
+
+# Calculating the RMSE for only the products rated by user.
+# For RMSE, normalising the rating to (1,5) range.
+
+from sklearn.preprocessing import MinMaxScaler
+from numpy import *
+
+X  = common_user_predicted_ratings.copy()
+X = X[X>0]
+
+scaler = MinMaxScaler(feature_range=(1, 5))
+print(scaler.fit(X))
+y = (scaler.transform(X))
+
+print(y)
+
+common_ = common.pivot_table(index='reviews_username', columns='id', values='reviews_rating')
+
+# Finding total non-NaN value
+total_non_nan = np.count_nonzero(~np.isnan(y))
+
+# RMSE (Root Mean Square Error) for User-User recommendation system
+
+rmse_user_user = (sum(sum((common_ - y )**2))/total_non_nan)**0.5
+print(rmse_user_user)
+
+## Using Item Similarity
+
+df_pivot = train.pivot_table(
+    index='reviews_username',
+    columns='id',
+    values='reviews_rating'
+).T
+
+df_pivot.head()
+
+mean = np.nanmean(df_pivot, axis=1)
+df_subtracted = (df_pivot.T-mean).T
+
+df_subtracted.head()
+
+#Finding the cosine similarity using pairwise distances approach
+# Item Similarity Matrix
+item_correlation = 1 - pairwise_distances(df_subtracted.fillna(0), metric='cosine')
+item_correlation[np.isnan(item_correlation)] = 0
+print(item_correlation)
+
+# Filtering the correlation only for which the value is greater than 0. (Positively correlated)
+item_correlation[item_correlation<0]=0
+item_correlation
