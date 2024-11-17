@@ -880,3 +880,79 @@ top20_item_rec = pd.merge(df_reco, df_top20_item_recommendations,left_on='id',ri
 top20_item_rec.reset_index(drop=True, inplace=True)
 top20_item_rec.sort_values(by='cosine_similarity_score', ascending=False)
 
+
+## Evaluation - Item Item
+
+print(test.columns)
+
+# Find out the common products of test and train dataset.
+common = test[test.id.isin(train.id)]
+common.shape
+
+print(common.head(2))
+
+common_item_based_matrix = common.pivot_table(index='reviews_username', columns='id', values='reviews_rating').T
+
+common_item_based_matrix.shape
+
+item_correlation_df = pd.DataFrame(item_correlation)
+
+print(item_correlation_df.head(2))
+
+item_correlation_df['movieId'] = df_subtracted.index
+item_correlation_df.set_index('movieId',inplace=True)
+item_correlation_df.head()
+
+list_name = common.id.tolist()
+
+item_correlation_df.columns = df_subtracted.index.tolist()
+
+item_correlation_df_1 =  item_correlation_df[item_correlation_df.index.isin(list_name)]
+
+item_correlation_df_2 = item_correlation_df_1.T[item_correlation_df_1.T.index.isin(list_name)]
+
+item_correlation_df_3 = item_correlation_df_2.T
+
+item_correlation_df_3.head(2)
+
+item_correlation_df_3[item_correlation_df_3<0]=0
+
+common_item_predicted_ratings = np.dot(item_correlation_df_3, common_item_based_matrix.fillna(0))
+common_item_predicted_ratings
+
+common_item_predicted_ratings.shape
+
+print(common.head(2))
+
+# Dummy test will be used for evaluation
+dummy_test = common.copy()
+
+dummy_test['reviews_rating'] = dummy_test['reviews_rating'].apply(lambda x: 1 if x>=1 else 0)
+
+dummy_test = dummy_test.pivot_table(index='reviews_username', columns='id', values='reviews_rating').T.fillna(0)
+
+common_item_predicted_ratings = np.multiply(common_item_predicted_ratings,dummy_test)
+
+# The products not rated are marked as 0 for evaluation
+common_ = common.pivot_table(index='reviews_username', columns='id', values='reviews_rating').T
+
+from sklearn.preprocessing import MinMaxScaler
+from numpy import *
+
+X  = common_item_predicted_ratings.copy()
+X = X[X>0]
+
+scaler = MinMaxScaler(feature_range=(1, 5))
+print(scaler.fit(X))
+y = (scaler.transform(X))
+
+print(y)
+
+# Finding total non-NaN value
+total_non_nan = np.count_nonzero(~np.isnan(y))
+
+# RMSE (Root Mean Square Error) for Item-Item recommendation system
+rmse_item_item = (sum(sum((common_ - y )**2))/total_non_nan)**0.5
+print(rmse_item_item)
+
+# Best-suited Recommendation model
